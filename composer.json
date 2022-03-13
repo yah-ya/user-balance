@@ -1,0 +1,20 @@
+{
+    "name": "yahya/fee-calculation",
+    "description": "Calculates the fee included in the input",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Yahya\\FeeCalculation\\": "src/",
+            "Yahyya\\taskmanager\\Tests\\": "tests"
+        }
+    },
+    "authors": [
+        {
+            "name": "Yahya",
+            "email": "y.t.15132@gmail.com"
+        }
+    ],
+    "require": {
+        "phpunit/phpunit": "^9.5.18"
+    }
+}
