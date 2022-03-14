@@ -16,8 +16,9 @@ class OperationRepository implements OperationRepositoryInterface
         $this->items = $items;
     }
 
-    public function all(): array
+    public function get(): array
     {
+
         return $this->items;
     }
 
@@ -26,13 +27,16 @@ class OperationRepository implements OperationRepositoryInterface
      */
     public function filterByUserId($userId): static
     {
+
         $result = [];
         foreach($this->items as $item){
+
             if($item->user->id == $userId){
                 $result[] = $item;
             }
         }
         $this->items = $result;
+
         return $this;
     }
 
@@ -40,21 +44,20 @@ class OperationRepository implements OperationRepositoryInterface
      * @param array $items - List Of Operations Model
      * @param $date (Starting date of the week)
      */
-    public function filterByWeek($date=null):static
+    public function filterByWeek($date):static
     {
         $result = [];
 
-        //if no date is provided , we will begin from the first item's date
-        if(is_null($date)){
-            $date = $this->items[0]->date;
-        }
-
         foreach($this->items as $item){
-            //check if same week
-            if(date('W',strtotime($item->date)) == date('W',strtotime($date))){
-                $result[] = $item;
+            //check if previous transactions
+            if(strtotime((string)$item->date) <= strtotime($date)) {
+                //check if same week
+                if (gmdate('oW', strtotime($item->date)) == gmdate('oW', strtotime($date))) {
+                    $result[] = $item;
+                }
             }
         }
+
         $this->items = $result;
         return $this;
     }
@@ -66,6 +69,7 @@ class OperationRepository implements OperationRepositoryInterface
      */
     public function filterByType($type):static
     {
+
         $result = [];
 
         foreach($this->items as $item){

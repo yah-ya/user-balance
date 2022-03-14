@@ -2,7 +2,7 @@
 namespace Yahyya\FeeCalculation\Models;
 
 abstract class User {
-    private int $id;
+    public int $id;
     private string $name;
     protected float $depositFee = 0;
     protected float $withdrawFee = 0;

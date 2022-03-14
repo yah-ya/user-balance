@@ -10,64 +10,87 @@ use Yahyya\Helpers\Helpers;
 class WithdrawService extends OperationService
 {
 
-    private $comitionFee = 0;
-    private $weeklyAmountForFreeOfChargeInEuro = 1000.00;
+    private float $weeklyAmountForFreeOfChargeInEuro = 1000.00;
     private $repo = null;
-    public function __construct(Operation $op)
+    public function __construct(Operation $op,OperationRepository $repo)
     {
         parent::__construct($op);
-        $this->repo = new OperationRepository();
+        $this->repo = $repo;
     }
 
     public function calcFee(): string
     {
-
         if($this->op->user instanceof PrivateUser){
-            $itemsOfTheWeek = $this->repo
-                ->filterByUserId($this->op->user->id)
-                ->filterByType(OperationType::WITHDRAW)
-                ->filterByWeek();
-
-            $fee = $this->calcItemsFee($itemsOfTheWeek);
-            return $fee * $this->op->amount;
+           return $this->calcFeeForPrivateUser();
         }
 
         if($this->op->user instanceof BussinessUser){
-            return $this->op->user->getWithdrawFee() * $this->op->amount;
+            return $this->calcFeeForBussinessUser();
         }
     }
 
 
-    private function calcItemsFee($items)
+    private function calcFeeForBussinessUser()
+    {
+        return ($this->op->user->getWithdrawFee() * $this->op->amount)/100;
+    }
+
+    private function calcFeeForPrivateUser()
+    {
+        //filter items of the repo
+        $itemsOfTheWeekForThisOperation = $this->repo
+            ->filterByUserId($this->op->user->id)
+            ->filterByType(OperationType::WITHDRAW)
+            ->filterByWeek($this->op->date)
+            ->get();
+
+
+        // get total amounts from the filtered items
+        $totals = $this->getTotals($itemsOfTheWeekForThisOperation);
+        $fee = $this->setFeeRules($totals['totalAmount'],$totals['totalItemsCalculated']);
+
+
+        return $fee/100 ;
+    }
+
+    private function getTotals(array $items)
     {
         $totalItemsCalculated = 0;
-        $totalAmount = 0;
+        $totalAmount = $this->op->getAmountInEUR();
 
         foreach($items as $item){
-            $totalAmount += $this->convertToEu($item->amount);
+            if($item->id==$this->op->id)
+                continue;
+            $totalAmount += $item->getAmountInEUR();
             $totalItemsCalculated++;
         }
 
-        return $this->checkFeeRules($totalAmount,$totalItemsCalculated);
+
+        return [
+            'totalItemsCalculated'=>$totalItemsCalculated,
+            'totalAmount'=>$totalAmount
+        ];
+
     }
 
-    private function checkFeeRules($totalAmount, $totalItemsCalculated){
+    // Check if the amount is lower than weekly free of charge
+    // or total items is less than weekly limit
+    private function setFeeRules($totalAmount, $totalItemsCalculated){
 
-        if($totalAmount <= $this->weeklyAmountForFreeOfChargeInEuro){
-            $fee =  $totalAmount * $this->op->user->withdrawFee;
+        print_r("Total amount ".$totalAmount);
+        print_r("Total ".$totalItemsCalculated.'-');
+        $amount = $this->op->getAmountInEUR();
+        if($totalAmount >= $this->weeklyAmountForFreeOfChargeInEuro && $totalItemsCalculated<4){
+            if ($totalItemsCalculated<1)
+                $amount = ($amount - $this->weeklyAmountForFreeOfChargeInEuro);
         }
-
-        if($totalAmount > $this->weeklyAmountForFreeOfChargeInEuro && $totalItemsCalculated<4){
-            $fee = ($totalAmount - $this->weeklyAmountForFreeOfChargeInEuro) * $this->op->user->withdrawFee;
-        }
+        if($totalAmount<$this->weeklyAmountForFreeOfChargeInEuro)
+            return 0;
+        $fee =  $amount * $this->op->user->getWithdrawFee();
 
         return $fee;
     }
 
-    private function convertToEu($amount)
-    {
-        return Helpers::convertToEur( $amount,$this->op->currency);
-    }
 
 
 }

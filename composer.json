@@ -6,7 +6,16 @@
         "psr-4": {
             "Yahya\\FeeCalculation\\": "src/",
             "Yahyya\\taskmanager\\Tests\\": "tests"
-        }
+        },
+        "classmap": [
+            "src/Controllers",
+            "src/Enum",
+            "src/Helpers",
+            "src/Interfaces",
+            "src/Models",
+            "src/Repositories",
+            "src/Services"
+        ]
     },
     "authors": [
         {

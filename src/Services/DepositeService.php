@@ -8,11 +8,13 @@ class DepositeService extends OperationService
 {
     public function __construct(Operation $op)
     {
+        print " Deposit " . $op->id;
         parent::__construct($op);
     }
 
     public function calcFee(): string
     {
-        return $this->op->amount * $this->op->user->getDepositeFee();
+        print_r($this->op->amount) . ' .... ' . $this->op->user->getDepositFee();
+        return $this->op->amount * $this->op->user->getDepositFee()/100;
     }
 }
