@@ -12,13 +12,7 @@ class OperationController
 
     public function getFees()
     {
-        $handle = fopen("test.csv", "r");
-        for ($i = 0; $row = fgetcsv($handle ); ++$i) {
-            $row[0] = str_replace('﻿','',$row[0]);
-            $item = new Operation($i+1,$row[0],$row[1],$row[2],$row[3],$row[4],$row[5]);
-            $items[] = $item;
-        }
-        fclose($handle);
+        $items = $this->readFileAndGetItems();
 
         $repo = new OperationRepository($items);
 
@@ -31,10 +25,23 @@ class OperationController
                 $service = new WithdrawService($item, $repo);
 
 
-            $fees[] = [number_format($service->calcFee(),2), $item];
+            $fees[] = number_format($service->calcFee(),2);
         }
 
         return $fees;
 
+    }
+
+    private function readFileAndGetItems(): array
+    {
+        $items = [];
+        $handle = fopen("test.csv", "r");
+        for ($i = 0; $row = fgetcsv($handle ); ++$i) {
+            $row[0] = str_replace('﻿','',$row[0]);
+            $item = new Operation($i+1,$row[0],$row[1],$row[2],$row[3],$row[4],$row[5]);
+            $items[] = $item;
+        }
+        fclose($handle);
+        return $items;
     }
 }

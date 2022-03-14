@@ -18,14 +18,13 @@ class UnitTest extends TestCase
         $controller = new OperationController();
         $fees = $controller->getFees();
 
-        print_r($fees);
         $this->assertEquals(0.60,$fees[0]);
         $this->assertEquals(3.00,$fees[1]);
         $this->assertEquals(0.00,$fees[2]);
         $this->assertEquals(0.06,$fees[3]);
         $this->assertEquals(1.50,$fees[4]);
         $this->assertEquals(0,$fees[5]);
-        $this->assertEquals(0.70,$fees[6]);
+        $this->assertEquals(0.69,$fees[6]);
         $this->assertEquals(0.30,$fees[7]);
         $this->assertEquals(0.30,$fees[8]);
         $this->assertEquals(3.00,$fees[9]);

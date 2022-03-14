@@ -13,6 +13,7 @@ class Operation
     public $currency;
     public $user;
     public float $amount;
+    public bool $calculated = false;
 
     public function __construct($id,string $date,int $userId,string $userType,string $type,float $amount,$currency)
     {

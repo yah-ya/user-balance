@@ -50,7 +50,7 @@ class OperationRepository implements OperationRepositoryInterface
 
         foreach($this->items as $item){
             //check if previous transactions
-            if(strtotime((string)$item->date) <= strtotime($date)) {
+            if(strtotime((string)$item->date) < strtotime($date)) {
                 //check if same week
                 if (gmdate('oW', strtotime($item->date)) == gmdate('oW', strtotime($date))) {
                     $result[] = $item;
