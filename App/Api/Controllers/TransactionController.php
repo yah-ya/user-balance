@@ -11,6 +11,7 @@ class TransactionController
     public function __construct(TransactionRepository $transactionRepository)
     {
         $this->transactionRepository=$transactionRepository;
+        header("Content-Type: application/json");
     }
 
     public function getUserBalance(User $user)
@@ -21,11 +22,12 @@ class TransactionController
         {
             $total += $tr['amount'];
         }
-        print "Total Balance:" .$total;
+        print json_encode(["balance"=> $total]);
     }
 
-    public function setTransactionAmount(User $user,int $amount):string
+    public function setTransactionAmount(User $user,int $amount)
     {
-        return $this->transactionRepository->addToUserId($user->getId(),$amount);
+        $reference = $this->transactionRepository->addToUserId($user->getId(),$amount);
+        print json_encode(["reference_id"=> $reference]);
     }
 }

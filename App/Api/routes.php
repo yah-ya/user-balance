@@ -26,7 +26,6 @@ switch ($_GET['dir']) {
         $transactionManager = $container->get('TransactionManager');
         $transactionController = new \App\Api\Controllers\TransactionController($transactionManager);
 
-        $res = $transactionController->setTransactionAmount($user,$amount);
-        print "Reference Id : ".$res;
+        $transactionController->setTransactionAmount($user,$amount);
 
 }
