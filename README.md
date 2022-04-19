@@ -2,7 +2,7 @@
 
 ## About Project
 
-This Project is to calculate the fee of a transaction 
+This Project is to calculate the user balance and make new transactions for the user
 
 
 
@@ -11,7 +11,7 @@ This Project is to calculate the fee of a transaction
 ## Installation
 composer install
 
-Run tests ,
-If you want to add new users , just extend the user method and update the Fee Percents for each user.
+Run tests \vendor\bin\phpunit tests
 
-Test is based on test.csv file in the root 
+Create DB tables using :
+php App\DB\Seed.php

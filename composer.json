@@ -1,20 +1,16 @@
 {
-    "name": "yahya/fee-calculation",
-    "description": "Calculates the fee included in the input",
+    "name": "yahya/user-balance",
+    "description": "Calculates the balance",
     "type": "project",
     "autoload": {
         "psr-4": {
-            "Yahya\\FeeCalculation\\": "src/",
-            "Yahyya\\taskmanager\\Tests\\": "tests"
+            "Yahya\\user-balance\\": "src/",
+            "Yahyya\\user-balance\\Tests\\": "tests"
         },
         "classmap": [
-            "src/Controllers",
-            "src/Enum",
-            "src/Helpers",
-            "src/Interfaces",
-            "src/Models",
-            "src/Repositories",
-            "src/Services"
+            "App/Models",
+            "App/Lib",
+            "App/Api"
         ]
     },
     "authors": [
@@ -24,6 +20,8 @@
         }
     ],
     "require": {
-        "phpunit/phpunit": "^9.5.18"
+        "phpunit/phpunit": "^9.5.18",
+        "ext-pdo": "*",
+        "php-di/php-di": "^6.3"
     }
 }
